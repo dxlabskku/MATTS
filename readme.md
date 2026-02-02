@@ -20,7 +20,7 @@ This hierarchical design explicitly decouples detection and diagnosis objectives
 
 ---
 
-## Architecture Details (Common)
+## Architecture Details
 
 ### LSTM Autoencoder
 
