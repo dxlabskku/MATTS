@@ -25,15 +25,20 @@ mitigating optimization conflicts under severe class imbalance.
 ## Architecture Details (Common)
 
 ### LSTM Autoencoder
-- Window length (sequence length): 5
-- Sliding window stride: 1
-- Encoder–decoder: single-layer LSTM
+- Window length (sequence length): **5**
+- Sliding window stride: **1** (**80% overlap**)
+- Encoder–decoder: **single-layer LSTM**
 - Reconstruction loss: Mean Squared Error (MSE)
 
-### Diagnostic Classifier
-- Input: latent representation from LSTM encoder
-- Architecture: lightweight MLP
-- Loss: weighted cross-entropy
+### Detection & Diagnosis Heads
+- Input: latent representation from the LSTM encoder (last time step)
+- **Anomaly head:** single linear layer (hidden_dim → 1) with **sigmoid** output  
+- **Diagnosis head:** single linear layer (hidden_dim → 4) trained only on anomalous samples
+- Loss: weighted binary cross-entropy (detection) + weighted cross-entropy (diagnosis)
+
+### Learnable Threshold (τ)
+- τ is implemented as a **learnable parameter** constrained to **[0, 1]** via a sigmoid transformation
+  and initialized to **0.5**.
 
 ---
 
@@ -59,7 +64,8 @@ based on validation Macro F1-score.
 
 - Optimizer: Adam
 - Maximum epochs: 1000
-- Early stopping: enabled (patience = 10)
+- Early stopping: enabled (**validation Macro F1-score**, patience = 10, min_delta = 0.001)
+- Gradient clipping: enabled (max_norm = 1.0)
 - Loss weighting: enabled to address severe class imbalance
 
 No explicit dropout or L2 regularization is applied.
@@ -73,8 +79,8 @@ No explicit dropout or L2 regularization is applied.
 | 16 | 4,773 | 0.018 MB |
 | 32 | 12,101 | 0.046 MB |
 
-Training time and convergence behavior vary across datasets and are reported
-in the experimental section of the paper.
+Training time and inference latency can be obtained by running the provided scripts
+with logging enabled (see `training.log` and `inference.log`).
 
 ---
 
@@ -89,24 +95,3 @@ python train.py \
   --hidden_size 16 \
   --epochs 1000 \
   --save_dir ./checkpoints
-````
-
-### Inference
-
-```bash
-python inference.py \
-  --data_path ./data/dataset.csv \
-  --save_dir ./checkpoints
-```
-
----
-
-## Output Files
-
-* `best_model.pt`: trained MATTS weights
-* `training.log`: training logs
-* `results.json`: evaluation metrics
-* `inference_results.json`: inference outputs
-
-```
-
