@@ -5,7 +5,7 @@ import logging
 import time
 from options import get_args
 from dataloader import load_and_preprocess_data, prepare_dataloaders
-from model import TwoStageLSTMAE
+from model import MATTS
 from utils import evaluate_model, count_parameters, get_model_size
 
 def setup_logging(save_dir):
@@ -40,7 +40,7 @@ def main():
         logger.error(f"Model not found at {model_path}")
         return
     
-    model = TwoStageLSTMAE(
+    model = MATTS(
         input_dim=data_loaders['input_size'],
         seq_length=args.seq_length,
         hidden_dim=args.hidden_size,
