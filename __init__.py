@@ -1,11 +1,11 @@
-from .model import TwoStageLSTMAutoencoder
-from .dataset import AnomalyDataset, load_and_preprocess_data, prepare_dataloaders
-from .trainer import train_epoch, validate
+from .model import MATTS
+from .dataloader import AnomalyDataset, load_and_preprocess_data, prepare_dataloaders
+from .train import train_epoch, validate
 from .utils import EarlyStopping, evaluate_model
 from .config import get_args, DEFAULT_CONFIG
 
 __all__ = [
-    'TwoStageLSTMAutoencoder',
+    'MATTS',
     'AnomalyDataset',
     'load_and_preprocess_data',
     'prepare_dataloaders',
