@@ -1,7 +1,7 @@
 import argparse
 
 def get_args():
-    parser = argparse.ArgumentParser(description='TwoStageLSTMAE Training')
+    parser = argparse.ArgumentParser(description='MATTS Training')
     
     parser.add_argument('--data_path', type=str, default='./data/dataset.csv', help='Path to dataset')
     parser.add_argument('--seq_length', type=int, default=5, help='Sequence length')
